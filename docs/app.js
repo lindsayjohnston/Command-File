@@ -28,7 +28,7 @@ function getCommands(){
 
     commands.forEach(function (item){
         const li=document.createElement('li');
-        li.className='collection-item';
+        li.className='collection-item col s12 teal lighten-4';
         li.appendChild(document.createTextNode(item));
 
         const link= document.createElement('a');
@@ -46,7 +46,7 @@ function addTask(event){
     }
 
     const li= document.createElement('li');
-    li.className='collection-item';
+    li.className='collection-item collection-item col s12 teal lighten-4';
     li.appendChild(document.createTextNode(commandInput.value));
 
     const link= document.createElement('a');
