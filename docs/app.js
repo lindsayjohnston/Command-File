@@ -3,6 +3,8 @@
 const form= document.querySelector('#command-form');
 const commandList= document.querySelector('.collection');
 const commandInput= document.querySelector('#command');
+const clearBtn= document.querySelector('.clear-commands');
+const filter=document.querySelector('#filter');
 
 //LOAD EVENT LISTENERS
 
@@ -11,6 +13,8 @@ loadEventListeners();
 function loadEventListeners(){
     form.addEventListener('submit', addTask);
     commandList.addEventListener('click', removeTask);
+    clearBtn.addEventListener('click', clearCommands);
+    filter.addEventListener('keyup',filterCommands );
 }
 
 function addTask(event){
@@ -39,4 +43,24 @@ function removeTask(event){
             event.target.parentElement.parentElement.remove();
         }
     };
+}
+
+function clearCommands(){
+    if(confirm("Are you sure?")){
+        while(commandList.firstChild){
+            commandList.removeChild(commandList.firstChild);
+        }
+    }
+}
+
+function filterCommands(event){
+    const text= (event.target.value.toLowerCase());
+    document.querySelectorAll('.collection-item').forEach(function(command){
+        const item= (command.firstChild.textContent.toLowerCase());
+        if(item.indexOf(text) !== -1){
+            command.style.display='block';
+        } else{
+            command.style.display='none';
+        }
+    })
 }
