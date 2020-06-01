@@ -11,10 +11,33 @@ const filter=document.querySelector('#filter');
 loadEventListeners();
 
 function loadEventListeners(){
+    document.addEventListener("DOMContentLoaded", getCommands);
     form.addEventListener('submit', addTask);
     commandList.addEventListener('click', removeTask);
     clearBtn.addEventListener('click', clearCommands);
     filter.addEventListener('keyup',filterCommands );
+}
+
+function getCommands(){
+    let commands;
+    if (localStorage.getItem('commands')===null){
+        commands=[];
+    } else{
+        commands=JSON.parse(localStorage.getItem('commands'));
+    }
+
+    commands.forEach(function (item){
+        const li=document.createElement('li');
+        li.className='collection-item';
+        li.appendChild(document.createTextNode(item));
+
+        const link= document.createElement('a');
+        link.className='delete-item secondary-content';
+        link.innerHTML='<i class="fa fa-remove"></i>';
+        li.appendChild(link);
+
+        commandList.appendChild(li);
+    })
 }
 
 function addTask(event){
@@ -33,16 +56,49 @@ function addTask(event){
     
     commandList.appendChild(li);
 
+    storeInLocalStorage(commandInput.value);
+
     commandInput.value='';
     event.preventDefault();
 }
+
+function storeInLocalStorage(command){
+    let commands;
+    if(localStorage.getItem('commands')=== null){
+        commands=[];
+    } else{
+        commands= JSON.parse(localStorage.getItem('commands'));
+    }
+
+    commands.push(command);
+    localStorage.setItem('commands',JSON.stringify(commands));
+}
+
 
 function removeTask(event){
     if(event.target.parentElement.classList.contains('delete-item')){
         if(confirm('Are you sure?')){
             event.target.parentElement.parentElement.remove();
-        }
+            removeCommandFromLocalStorage(event.target.parentElement.parentElement);
+        };
     };
+}
+
+function removeCommandFromLocalStorage(command){
+    let commands;
+    if(localStorage.getItem('commands')=== null){
+        commands=[];
+    } else{
+        commands= JSON.parse(localStorage.getItem('commands'));
+    }
+
+    commands.forEach(function (item, index){
+        if(item === command.firstChild.textContent){
+            commands.splice(index, 1);
+        }
+    });
+
+    localStorage.setItem('commands', JSON.stringify(commands));
 }
 
 function clearCommands(){
@@ -50,6 +106,7 @@ function clearCommands(){
         while(commandList.firstChild){
             commandList.removeChild(commandList.firstChild);
         }
+        localStorage.setItem("commands", JSON.stringify([]));
     }
 }
 
